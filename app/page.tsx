@@ -1,24 +1,19 @@
-import axios from 'axios';
-import UsersTable from './_components/UsersTable';
-import { USERS_API_URL } from './_lib/usersApi';
+"use client"
 
-const HomePage = async () => {
-	let data: Array<Record<string, unknown>> = [];
+import { useCounterStore } from './store/useCounterStore';
 
-	try {
-		const response = await axios.get<Array<Record<string, unknown>>>(USERS_API_URL);
-		data = response.data;
-	} catch (error) {
-		console.error('Users API is not available:', error);
-	}
+export default function Home() {
+	const { count, increment, decrement, reset, increseByTen } = useCounterStore();
 
 	return (
-		<div className='min-vh-100 bg-light py-4'>
-			<div className='container'>
-				<UsersTable users={data} />
+		<main className='flex min-h-screen flex-col items-center justify-between p-24'>
+			<h1 className='text-4xl font-bold'>Counter: {count}</h1>
+			<div className='space-x-4 flex gap-3'>
+				<button onClick={increment} className='px-4 py-2 bg-green-500 text-white rounded'>Increment</button>
+				<button onClick={decrement} className='px-4 py-2 bg-red-500 text-white rounded'>Decrement</button>
+				<button onClick={reset} className='px-4 py-2 bg-gray-500 text-white rounded'>Reset</button>
+				<button onClick={increseByTen} className='px-4 py-2 bg-blue-500 text-white rounded'>Increment by 10</button>
 			</div>
-		</div>
+		</main>
 	);
-};
-
-export default HomePage;
+}

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { USERS_API_URL } from '../_lib/usersApi';
 
 type User = {
-	id: number;
+	id: string | number;
 	name: string;
 	age: number;
 	isStudent: boolean;
@@ -18,7 +18,7 @@ interface UserTableProps {
 const UserTable = ({ users }: UserTableProps) => {
 	const [rows, setRows] = useState<User[]>(
 		users.map((user, index) => ({
-			id: typeof user.id === 'number' ? user.id : index + 1,
+			id: typeof user.id === 'number' || typeof user.id === 'string' ? user.id : `local-${index + 1}`,
 			name: user.name?.trim() || 'No name',
 			age: typeof user.age === 'number' ? user.age : 0,
 			isStudent: typeof user.isStudent === 'boolean' ? user.isStudent : false,
@@ -27,7 +27,7 @@ const UserTable = ({ users }: UserTableProps) => {
 	const [name, setName] = useState('');
 	const [age, setAge] = useState('');
 	const [isStudent, setIsStudent] = useState(false);
-	const [editingId, setEditingId] = useState<number | null>(null);
+	const [editingId, setEditingId] = useState<User['id'] | null>(null);
 	const [requestError, setRequestError] = useState<string | null>(null);
 
 	const getRequestErrorMessage = (error: unknown) => {
@@ -88,7 +88,7 @@ const UserTable = ({ users }: UserTableProps) => {
 		}
 	};
 
-	const handleDelete = async (id: number) => {
+	const handleDelete = async (id: User['id']) => {
 		try {
 			await axios.delete(`${USERS_API_URL}/${id}`);
 			setRows((prevRows) => prevRows.filter((user) => user.id !== id));

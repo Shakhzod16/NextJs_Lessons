@@ -1,22 +1,16 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "Nozim Kozimov",
-      "age": 13,
-      "isStudent": false
-    },
-    {
-      "name": "fghjio",
-      "age": 8523,
-      "isStudent": false,
-      "id": "keCk0vvIZOQ"
-    },
-    {
-      "name": "kj ml;'",
-      "age": 52,
+      "name": "islombek",
+      "age": 56,
       "isStudent": true,
-      "id": "Oqk3G6Ekjm0"
+      "id": "szRiTn0FDkQ"
+    },
+    {
+      "name": "Davron",
+      "age": 7,
+      "isStudent": true,
+      "id": "OSxPZm18pvE"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
