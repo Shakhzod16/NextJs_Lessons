@@ -1,19 +1,20 @@
-"use client"
+import StudentsDashboard from './_components/StudentsDashboard';
+import { getRequestErrorMessage, getStudents } from './_lib/studentsApi';
+import type { Student } from './types/student';
 
-import { useCounterStore } from './store/useCounterStore';
+export default async function Page() {
+	let initialStudents: Student[] = [];
+	let initialError: string | null = null;
 
-export default function Home() {
-	const { count, increment, decrement, reset, increseByTen } = useCounterStore();
+	try {
+		initialStudents = await getStudents();
+	} catch (error) {
+		initialError = getRequestErrorMessage(error, 'Could not load students.');
+	}
 
 	return (
-		<main className='flex min-h-screen flex-col items-center justify-between p-24'>
-			<h1 className='text-4xl font-bold'>Counter: {count}</h1>
-			<div className='space-x-4 flex gap-3'>
-				<button onClick={increment} className='px-4 py-2 bg-green-500 text-white rounded'>Increment</button>
-				<button onClick={decrement} className='px-4 py-2 bg-red-500 text-white rounded'>Decrement</button>
-				<button onClick={reset} className='px-4 py-2 bg-gray-500 text-white rounded'>Reset</button>
-				<button onClick={increseByTen} className='px-4 py-2 bg-blue-500 text-white rounded'>Increment by 10</button>
-			</div>
+		<main className='mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8'>
+			<StudentsDashboard initialStudents={initialStudents} initialError={initialError} />
 		</main>
 	);
 }

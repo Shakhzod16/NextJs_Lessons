@@ -1,4 +1,27 @@
 {
+  "students": [
+    {
+      "fullName": "Shahzod Qosimov",
+      "email": "qosimov0805@gmail.com",
+      "phone": "919201636",
+      "password": "qwerty1234",
+      "id": "4dZvVl1Zl5w"
+    },
+    {
+      "fullName": "Shahzod Qosimov",
+      "email": "qosimov0805@gmail.com",
+      "phone": "919201636",
+      "password": "qwerty1234",
+      "id": "s92utll9YZg"
+    },
+    {
+      "fullName": "Shahzod Qosimov",
+      "email": "qosimov0805@gmail.com",
+      "phone": "919201636",
+      "password": "23455553434t",
+      "id": "kqkwTiv_pl0"
+    }
+  ],
   "users": [
     {
       "name": "islombek",
