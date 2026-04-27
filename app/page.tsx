@@ -1,15 +1,21 @@
 import StudentsDashboard from './_components/StudentsDashboard';
-import { getRequestErrorMessage, getStudents } from './_lib/studentsApi';
-import type { Student } from './types/student';
+import { getRequestErrorMessage, normalizeFood } from './_lib/foodsApi';
+import type { Food } from './types/food';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Page() {
-	let initialStudents: Student[] = [];
+	let initialStudents: Food[] = [];
 	let initialError: string | null = null;
 
 	try {
-		initialStudents = await getStudents();
+		const supabase = await createClient();
+		const { data, error } = await supabase.from('foods').select('*').order('created_at', { ascending: false });
+		if (error) {
+			throw error;
+		}
+		initialStudents = (data ?? []).map(row => normalizeFood(row as Record<string, unknown>));
 	} catch (error) {
-		initialError = getRequestErrorMessage(error, 'Could not load students.');
+		initialError = getRequestErrorMessage(error, 'Could not load foods.');
 	}
 
 	return (

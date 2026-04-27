@@ -2,21 +2,21 @@
 
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import type { Student } from '../types/student';
+import type { Food } from '../types/food';
 import StudentModal from './StudentModal';
 import StudentTable from './StudentTable';
-import { useStudentStore } from '../store/useStudentStore';
+import { useFoodStore } from '../store/useFoodStore';
 
 interface StudentsDashboardProps {
-	initialStudents: Student[];
+	initialStudents: Food[];
 	initialError: string | null;
 }
 
 export default function StudentsDashboard({ initialStudents, initialError }: StudentsDashboardProps) {
-	const bootstrap = useStudentStore((state) => state.bootstrap);
-	const openCreateDialog = useStudentStore((state) => state.openCreateDialog);
-	const error = useStudentStore((state) => state.error);
-	const clearError = useStudentStore((state) => state.clearError);
+	const bootstrap = useFoodStore(state => state.bootstrap);
+	const openCreateDialog = useFoodStore(state => state.openCreateDialog);
+	const error = useFoodStore(state => state.error);
+	const clearError = useFoodStore(state => state.clearError);
 
 	useEffect(() => {
 		bootstrap(initialStudents, initialError);
@@ -26,12 +26,12 @@ export default function StudentsDashboard({ initialStudents, initialError }: Stu
 		<section className='space-y-6'>
 			<div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
 				<div className='space-y-1'>
-					<h1 className='text-3xl font-semibold tracking-tight text-slate-950'>Students</h1>
+					<h1 className='text-5xl font-semibold tracking-tight text-slate-950'>Menu</h1>
 				</div>
 
 				<Button className='self-start rounded-full px-5' onClick={openCreateDialog}>
 					<span className='text-base leading-none'>+</span>
-					Student
+					Food
 				</Button>
 			</div>
 

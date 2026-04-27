@@ -10,58 +10,75 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useStudentStore } from '../store/useStudentStore';
-import type { StudentFormValues } from '../types/student';
+import { useFoodStore } from '../store/useFoodStore';
+import type { FoodFormValues } from '../types/food';
 
 export default function StudentModal() {
-	const isDialogOpen = useStudentStore(state => state.isDialogOpen);
-	const editingStudent = useStudentStore(state => state.editingStudent);
-	const closeDialog = useStudentStore(state => state.closeDialog);
-	const createStudent = useStudentStore(state => state.createStudent);
-	const updateStudent = useStudentStore(state => state.updateStudent);
+	const isDialogOpen = useFoodStore(state => state.isDialogOpen);
+	const editingFood = useFoodStore(state => state.editingFood);
+	const closeDialog = useFoodStore(state => state.closeDialog);
+	const createFood = useFoodStore(state => state.createFood);
+	const updateFood = useFoodStore(state => state.updateFood);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
-		const payload: StudentFormValues = {
-			fullName: String(formData.get('fullName') ?? ''),
-			email: String(formData.get('email') ?? ''),
-			phone: String(formData.get('phone') ?? ''),
-			password: String(formData.get('password') ?? ''),
+		const payload: FoodFormValues = {
+			name: String(formData.get('name') ?? ''),
+			description: String(formData.get('description') ?? ''),
+			imageUrl: String(formData.get('imageUrl') ?? ''),
+			price: Number(formData.get('price') ?? 0),
+			isAvailable: formData.get('isAvailable') === 'on',
 		};
 
-		if (editingStudent) {
-			await updateStudent(payload);
+		if (editingFood) {
+			await updateFood(payload);
 			return;
 		}
-		await createStudent(payload);
+		await createFood(payload);
 	};
 
 	return (
 		<Dialog open={isDialogOpen} onOpenChange={open => !open && closeDialog()}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{editingStudent ? 'Edit Student' : 'Add Student'}</DialogTitle>
-					<DialogDescription>Fill all fields to save student information.</DialogDescription>
+					<DialogTitle>{editingFood ? 'Edit Food' : 'Add Food'}</DialogTitle>
+					<DialogDescription>Ovqat ma&apos;lumotlarini to&apos;ldirib saqlang.</DialogDescription>
 				</DialogHeader>
 
-				<form key={editingStudent?.id ?? 'new'} className='space-y-4' onSubmit={handleSubmit}>
-					<Input name='fullName' required placeholder='Full name' defaultValue={editingStudent?.fullName ?? ''} />
-					<Input name='email' required type='email' placeholder='Email' defaultValue={editingStudent?.email ?? ''} />
-					<Input name='phone' required placeholder='Phone' defaultValue={editingStudent?.phone ?? ''} />
+				<form key={editingFood?.id ?? 'new'} className='space-y-4' onSubmit={handleSubmit}>
+					<Input name='name' required placeholder='Ovqat nomi' defaultValue={editingFood?.name ?? ''} />
+					<Input name='imageUrl' required type='url' placeholder='Rasm URL' defaultValue={editingFood?.imageUrl ?? ''} />
 					<Input
-						name='password'
+						name='description'
 						required
-						type='password'
-						placeholder='Password'
-						defaultValue={editingStudent?.password ?? ''}
+						placeholder='Description'
+						defaultValue={editingFood?.description ?? ''}
 					/>
+					<Input
+						name='price'
+						required
+						type='number'
+						min='0'
+						step='1000'
+						placeholder='Narxi'
+						defaultValue={editingFood?.price ?? ''}
+					/>
+					<label className='flex items-center gap-2 text-sm text-slate-700'>
+						<input
+							name='isAvailable'
+							type='checkbox'
+							className='h-4 w-4 rounded border-slate-300'
+							defaultChecked={editingFood?.isAvailable ?? true}
+						/>
+						Mavjud
+					</label>
 
 					<DialogFooter>
 						<Button variant='outline' type='button' onClick={closeDialog}>
 							Cancel
 						</Button>
-						<Button type='submit'>{editingStudent ? 'Save changes' : 'Add student'}</Button>
+						<Button type='submit'>{editingFood ? 'Save changes' : 'Add food'}</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>
