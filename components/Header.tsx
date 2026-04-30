@@ -12,57 +12,67 @@ import { createClient } from '@/utils/supabase/client';
 import { useCategoryStore } from '@/app/store/useCategoryStore';
 import { Category } from '@/app/types';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation'
 
 function Header() {
-	const { modalOpen, setVisible, changeForm, productForm } = useProductStore();
+	const { modalOpen, setVisible, changeForm, productForm, resetForm } = useProductStore();
 	const { categories, setCategories } = useCategoryStore();
 	const supabase = createClient();
-	// <Dialog open={modalOpen} onOpenChange={() => setVisible(false)} modal={false}></Dialog>;
+	const router = useRouter();
 
 	useEffect(() => {
-		// eslint-disable-next-line react-hooks/immutability
 		fetchCategories();
 	}, []);
 
 	const fetchCategories = async () => {
-		try {
-			const { data } = await supabase.from('categories').select('*');
-			setCategories(data as Category[]);
-		} catch (error) {
-			setCategories([]);
+		const { data, error } = await supabase.from('categories').select('*');
+		if (error) {
 			console.error(error);
+			setCategories([]);
+			return;
 		}
+		setCategories(data as Category[]);
 	};
 
 	const handleSave = async () => {
-		try {
-			await supabase.from('products').insert([{ ...productForm, price: parseFloat(productForm.price) }]);
-			setVisible(false);
-		} catch (error) {
-			console.error(error);
+		if (!productForm.title || !productForm.price) {
+			alert('Title va Price majburiy!');
+			return;
 		}
+
+		const { data, error } = await supabase.from('products').insert([
+			{
+				...productForm,
+				price: parseFloat(productForm.price),
+				categoryId: productForm.categoryId || null,
+			},
+		]);
+
+		console.log('error:', error);
+		if (error) return;
+		setVisible(false);
+		router.refresh();
+		resetForm();
 	};
 
 	const handleImage = async (file: File) => {
-		try {
-			const { data } = await supabase.storage.from('Users').upload(`image_${Date.now()}`, file);
-			if (!data) {
-				return;
-			}
-			changeForm('imageUrl', data.path);
-		} catch (error) {
+		const { data, error } = await supabase.storage.from('Users').upload(`image_${Date.now()}`, file);
+		if (error) {
 			console.error(error);
+			return;
 		}
+		const { data: urlData } = supabase.storage.from('Users').getPublicUrl(data.path);
+		changeForm('imageUrl', urlData.publicUrl);
 	};
 
 	return (
 		<div className='py-4 shadow-md'>
-			<div className='container mx-auto flex items-center justify-between '>
+			<div className='container mx-auto flex items-center justify-between'>
 				<h1 className='font-medium'>Shop</h1>
 				<Input placeholder='Search' type='search' className='max-w-lg' />
 				<Button onClick={() => setVisible(true)}>+ Product</Button>
 			</div>
-			<Dialog open={modalOpen} onOpenChange={() => setVisible(false)}>
+			<Dialog open={modalOpen} onOpenChange={() => setVisible(false)} modal={false}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Add Product</DialogTitle>
@@ -105,7 +115,7 @@ function Header() {
 							value={productForm.title}
 							onChange={e => changeForm('title', e.target.value)}
 							type='text'
-							placeholder='description...'
+							placeholder='title...'
 							className='mt-2'
 						/>
 						<Textarea
@@ -118,6 +128,7 @@ function Header() {
 							onChange={e => changeForm('price', e.target.value)}
 							type='number'
 							placeholder='price...'
+							required
 							className='mt-2'
 						/>
 						<Select value={productForm.categoryId} onValueChange={value => changeForm('categoryId', value)}>

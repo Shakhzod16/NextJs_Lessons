@@ -3,6 +3,7 @@ export type Category = {
 	name: string;
 	created_at: string;
 };
+
 export type Product = {
 	id: string;
 	title: string;
@@ -10,4 +11,7 @@ export type Product = {
 	price: number;
 	imageUrl: string;
 	categoryId: string;
+	category: {
+		name: string;
+	} | null;
 };

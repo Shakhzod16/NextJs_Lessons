@@ -1,14 +1,26 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { Category as CategoryType } from '@/app/types';
 import CategoryCard from './CategoryCard';
 
-function Categories() {
+interface CategoriesProps {
+	categories: CategoryType[];
+}
+
+function Categories({ categories }: CategoriesProps) {
+	const router = useRouter();
+
+	const handleClick = (categoryId: string) => {
+		router.push(`/?categoryId=${categoryId}`);
+	};
+
 	return (
 		<div className='container mx-auto mt-4 flex items-center gap-4 overflow-x-auto'>
-			<CategoryCard />
-			<CategoryCard />
-			<CategoryCard />
-			<CategoryCard />
-			<CategoryCard />
-			<CategoryCard />
+			<CategoryCard name='All' onClick={() => handleClick('')} />
+			{categories?.map(category => (
+				<CategoryCard name={category.name} key={category.id} onClick={() => handleClick(category.id)} />
+			))}
 		</div>
 	);
 }

@@ -1,29 +1,35 @@
 import { create } from 'zustand';
 
+type ProductForm = {
+	title: string;
+	description: string;
+	price: string;
+	imageUrl: string;
+	categoryId: string;
+};
+
 type Store = {
 	modalOpen: boolean;
-	productForm: {
-		title: string;
-		description: string;
-		price: string;
-		imageUrl: string;
-		categoryId: string;
-	};
+	productForm: ProductForm;
 	setVisible: (open: boolean) => void;
-	changeForm: (field: string, value: string) => void;
+	changeForm: (field: keyof ProductForm, value: string) => void;
+	resetForm: () => void;
+};
+
+const initialForm: ProductForm = {
+	title: '',
+	description: '',
+	price: '',
+	imageUrl: '',
+	categoryId: '',
 };
 
 export const useProductStore = create<Store>(set => ({
 	modalOpen: false,
-	productForm: {
-		title: '',
-		description: '',
-		price: '',
-		imageUrl: '',
-		categoryId: '',
-	},
+	productForm: initialForm,
 
 	setVisible: visible => set({ modalOpen: visible }),
+
 	changeForm: (field, value) =>
 		set(state => ({
 			productForm: {
@@ -31,4 +37,6 @@ export const useProductStore = create<Store>(set => ({
 				[field]: value,
 			},
 		})),
+
+	resetForm: () => set({ productForm: initialForm }),
 }));
