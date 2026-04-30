@@ -11,13 +11,12 @@ interface Props {
 
 const Home = async ({ searchParams }: Props) => {
 	const supabase = await createClient();
-  const prams = await searchParams;
+	const params = await searchParams;
 
-	const { data: categoryData } = await supabase.from('categories').select('*')
-	const { data: productData } = await supabase
-		.from('products')
-		.select('*, category:categories(name)')
-		.eq('categoryId', prams.categoryId);;
+	const { data: categoryData } = await supabase.from('categories').select('*');
+	const { data: productData } = params.categoryId
+		? await supabase.from('products').select('*, category:categories(id,name)').eq('categoryId', params.categoryId)
+		: await supabase.from('products').select('*, category:categories(id,name)');
 
 	return (
 		<div className=''>
